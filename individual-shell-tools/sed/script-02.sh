@@ -8,4 +8,4 @@ set -euo pipefail
 
 # -E is extended regex, needed for + (one or more) quantifier
 # [[:space:]] is POSIX compliant
-sed -E s':[0-9]+[[:space:]]::g' ./input.txt
+sed -E s'/[0-9]+[[:space:]]//g' ./input.txt
