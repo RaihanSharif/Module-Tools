@@ -10,6 +10,6 @@ set -euo pipefail
 # -n prevent default printing behaviour 
 # ! negates regex match, i.e. gets lines that don't match
 # p prints
-sed -n ':[0-9]:!p' input.txt
+sed -n '/[0-9]/!p' input.txt
 
 
