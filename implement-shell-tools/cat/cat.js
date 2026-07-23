@@ -1,31 +1,8 @@
-import { promises as fs } from "node:fs";
+import { readFileSync } from "node:fs";
 import process from "node:process";
 
-/*
-BASIC requirements:
-single file with no flags:
-    cat sample-files/1.txt
-single file with a valid flag:
-    cat -n sample-files/1.txt
-    cat -b sample-files/1.txt
-read mutliple files with the * wildcard
-    cat -n sample/files/*.txt
-
-Cat strips trailing new line in file
-
--n = number each line
--b = number each non-empty line
-
-STRETCH GOALS
--b takes priority when -nb or -bn
-must take in mutiple files:
-  node cat file1.txt file2.txt file3.txt
-  node cat -n file1.txt file2.txt file3.txt
-
-must be able to take in multiple flags or combined flags
-  node cat -bn file.txt
-  node cat -b -n file.txt
-*/
+// Note: takes only one flag, -n or -b, and accepts whatever the last flag is
+// can parse flag from any position in args
 
 // capturing the user args
 const args = process.argv.slice(2);
@@ -33,10 +10,7 @@ const args = process.argv.slice(2);
 let flag;
 const paths = [];
 
-// takes only one flag, and accepts whatever the last flag is
-// can parse flag from any position in args
-
-// the * (glob expansion is done automatically by the zsh, bash etc. on linux)
+// the * (glob expansion is done automatically by zsh, bash etc. on linux)
 for (const arg of args) {
     if (arg === "-n" || arg === "-b") {
         flag = arg;
@@ -45,11 +19,47 @@ for (const arg of args) {
     }
 }
 
+// if no file is supplied exit with error
+if (paths.length === 0) {
+    console.error("usage: cat [-n] <file...>");
+    process.exit(1);
+}
+
 // starting file number, if lines need to be prepended
 let lineNum = 1;
 
-// if no file is supplied
-if (files.length === 0) {
-    console.error("usage: cat [-n] <file...>");
-    process.exit(1); // exit with error
+for (const path of paths) {
+    let file;
+    try {
+        // using sync as it's a simple short program
+        file = readFileSync(path, "utf-8");
+    } catch (err) {
+        console.error(`cat: ${path}: ${err.message}`);
+        continue; // Real cat continues to next file if current file not found
+    }
+
+    const lines = file.split("\n");
+
+    // remove trailing empty line as this how real cat works
+    if (lines[lines.length - 1] === "") lines.pop();
+
+    if (flag === "-n") {
+        for (const line of lines) {
+            console.log(`${lineNum} ${line}`);
+            lineNum++;
+        }
+    } else if (flag === "-b") {
+        for (const line of lines) {
+            if (line === "") {
+                console.log(line);
+            } else {
+                console.log(`${lineNum} ${line}`);
+                lineNum++;
+            }
+        }
+    } else {
+        for (const line of lines) {
+            console.log(line);
+        }
+    }
 }
