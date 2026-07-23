@@ -35,4 +35,14 @@ function getPathEntries(path, aFlag = flags.has("a")) {
     return entries;
 }
 
-console.log(getPathEntries(paths[0]));
+// formatter: if -1 flag, print entry per line
+// else all in one line with
+function printEntries(entries, onePerLineFlag = flags.has("1")) {
+    if (onePerLineFlag) {
+        entries.forEach((e) => console.log(e));
+    } else {
+        console.log(entries.join("\t"));
+    }
+}
+
+printEntries(getPathEntries(paths[0]));
