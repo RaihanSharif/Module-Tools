@@ -31,7 +31,7 @@ must be able to take in multiple flags or combined flags
 const args = process.argv.slice(2);
 
 let flag;
-const files = [];
+const paths = [];
 
 // takes only one flag, and accepts whatever the last flag is
 // can parse flag from any position in args
@@ -41,7 +41,7 @@ for (const arg of args) {
     if (arg === "-n" || arg === "-b") {
         flag = arg;
     } else {
-        files.push(arg);
+        paths.push(arg);
     }
 }
 
