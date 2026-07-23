@@ -1,5 +1,6 @@
 import { dir } from "node:console";
 import fs from "node:fs";
+import path from "node:path";
 import process from "node:process";
 
 const args = process.argv.slice(2);
@@ -23,40 +24,15 @@ if (paths.length === 0) {
     paths.push(".");
 }
 
-function printFiles(path) {
-    if (fs.statSync(path).isDirectory()) {
-        if (flags.has("a")) {
-            if (flags.has("1")) {
-                fs.readdirSync(path).forEach((e) => console.log(e));
-            } else {
-                console.log(fs.readdirSync(path).join("\t"));
-            }
-        } else {
-            if (flags.has("1")) {
-                fs.readdirSync(path)
-                    .filter((e) => !e.startsWith("."))
-                    .forEach((e) => console.log(e));
-            } else {
-                console.log(
-                    fs
-                        .readdirSync(path)
-                        .filter((e) => !e.startsWith("."))
-                        .join("\t"),
-                );
-            }
-        }
-    } else {
-        console.log(path);
+// returns all entries for a given path
+// if -a flag, then include dotfiles, else exclude dotfiles
+function getPathEntries(path, aFlag = flags.has("a")) {
+    let entries = fs.readdirSync(path);
+
+    if (!aFlag) {
+        entries = entries.filter((e) => !e.startsWith("."));
     }
+    return entries;
 }
 
-if (paths.length === 1) {
-    printFiles(paths[0]);
-} else {
-    paths.forEach((path) => {
-        if (fs.statSync(path).isDirectory()) {
-            console.log(`\n${path}:`);
-        }
-        printFiles(path);
-    });
-}
+console.log(getPathEntries(paths[0]));
