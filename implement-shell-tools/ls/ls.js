@@ -1,6 +1,4 @@
-import { dir } from "node:console";
 import fs from "node:fs";
-import path from "node:path";
 import process from "node:process";
 
 const args = process.argv.slice(2);
@@ -41,8 +39,28 @@ function printEntries(entries, onePerLineFlag = flags.has("1")) {
     if (onePerLineFlag) {
         entries.forEach((e) => console.log(e));
     } else {
-        console.log(entries.join("\t"));
+        // if join on empty entries arr, add extra blank line
+        if (entries.length !== 0) {
+            console.log(entries.join("\t"));
+        }
     }
 }
 
-printEntries(getPathEntries(paths[0]));
+// this is needed to group files at the top and folers at the bottom when giving mutiple path arguements
+// to argv e.g. node ls.js sample-files/*
+const fileArgs = paths.filter((p) => !fs.statSync(p).isDirectory());
+const dirArgs = paths.filter((p) => fs.statSync(p).isDirectory());
+
+// First print all plain file arguments together, as one group
+if (fileArgs.length > 0) {
+    printEntries(fileArgs);
+}
+
+// Then print each directory's listing, with headers if needed
+dirArgs.forEach((path, index) => {
+    if (paths.length > 1) {
+        if (index > 0 || fileArgs.length > 0) console.log("");
+        console.log(`${path}:`);
+    }
+    printEntries(getPathEntries(path));
+});
