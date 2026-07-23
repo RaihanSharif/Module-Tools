@@ -1,16 +1,47 @@
 import { promises as fs } from "node:fs";
 import process from "node:process";
 
-const path = process.argv.slice(2)[0];
-const numLines = process.argv.slice(3)[0];
+/*
+BASIC requirements:
+single file with no flags:
+    cat sample-files/1.txt
+single file with a valid flag:
+    cat -n sample-files/1.txt
+    cat -b sample-files/1.txt
+read mutliple files with the * wildcard
+    cat -n sample/files/*.txt
 
-// console.log(numLines);
-// console.log(process.argv.slice(3)[0]);
-const myFile = await fs.readFile(path, "utf-8");
-let lines = myFile.split("\n");
+Cat strips trailing new line in file
 
-if (!isNaN(numLines)) {
-    lines = lines.slice(0, numLines);
+-n = number each line
+-b = number each non-empty line
+
+STRETCH GOALS
+-b takes priority when -nb or -bn
+must take in mutiple files:
+  node cat file1.txt file2.txt file3.txt
+  node cat -n file1.txt file2.txt file3.txt
+
+must be able to take in multiple flags or combined flags
+  node cat -bn file.txt
+  node cat -b -n file.txt
+*/
+
+// capturing the user args
+const args = process.argv.slice(2);
+
+let flag;
+const files = [];
+
+// takes only one flag, and accepts whatever the last flag is
+// can parse flag from any position in args
+for (const arg of args) {
+    if (arg === "-n" || arg === "-b") {
+        flag = arg;
+    } else {
+        files.push(arg);
+    }
 }
 
-lines.forEach((e) => console.log(e));
+console.log(`flags: ${flag}`);
+console.log(`files: ${files}`);
