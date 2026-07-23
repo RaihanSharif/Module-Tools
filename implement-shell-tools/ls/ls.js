@@ -1,16 +1,11 @@
 import { dir } from "node:console";
 import fs from "node:fs";
-import path from "node:path";
 import process from "node:process";
 
 const args = process.argv.slice(2);
 
 const flags = new Set();
 let paths = [];
-
-if (args.length === 0) {
-    args.push(".");
-}
 
 for (const arg of args) {
     if (arg.startsWith("-") && arg !== "-") {
@@ -24,30 +19,44 @@ for (const arg of args) {
     }
 }
 
-const files = [];
-const directories = [];
+if (paths.length === 0) {
+    paths.push(".");
+}
 
-if (paths.length > 1) {
+function printFiles(path) {
+    if (fs.statSync(path).isDirectory()) {
+        if (flags.has("a")) {
+            if (flags.has("1")) {
+                fs.readdirSync(path).forEach((e) => console.log(e));
+            } else {
+                console.log(fs.readdirSync(path).join("\t"));
+            }
+        } else {
+            if (flags.has("1")) {
+                fs.readdirSync(path)
+                    .filter((e) => !e.startsWith("."))
+                    .forEach((e) => console.log(e));
+            } else {
+                console.log(
+                    fs
+                        .readdirSync(path)
+                        .filter((e) => !e.startsWith("."))
+                        .join("\t"),
+                );
+            }
+        }
+    } else {
+        console.log(path);
+    }
+}
+
+if (paths.length === 1) {
+    printFiles(paths[0]);
+} else {
     paths.forEach((path) => {
         if (fs.statSync(path).isDirectory()) {
-            directories.push(path);
-        } else {
-            files.push(path);
+            console.log(`\n${path}:`);
         }
-    });
-} else {
-    fs.readdir(paths[0], (err, files) => console.log(files.join("\t")));
-}
-
-if (files.length > 0) {
-    console.log(files.join("\t"));
-}
-
-if (directories.length > 0) {
-    directories.forEach((dir) => {
-        console.log(`\n${dir}:`);
-        fs.readdir(dir, (err, files) => {
-            console.log(files.join("\t"));
-        });
+        printFiles(path);
     });
 }
