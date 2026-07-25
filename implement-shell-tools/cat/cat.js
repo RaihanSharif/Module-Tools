@@ -26,9 +26,9 @@ if (paths.length === 0) {
 }
 
 // starting file number, if lines need to be prepended
-let lineNum = 1;
 
 for (const path of paths) {
+    let lineNum = 1;
     let file;
     try {
         // using sync as it's a simple short program
