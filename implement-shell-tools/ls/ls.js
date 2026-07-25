@@ -6,17 +6,22 @@ const args = process.argv.slice(2);
 const flags = new Set();
 let paths = [];
 
-for (const arg of args) {
-    if (arg.startsWith("-") && arg !== "-") {
+let isFlag = true;
+for (let i = 0; i < args.length; i++) {
+    if (isFlag && args[i] === "--") {
+        isFlag = false;
+    } else if (isFlag && args[i].startsWith("-") && args[i] !== "-") {
         // capture the flags without the -
         // supports combined flags like -1a
-        for (const ch of arg.slice(1)) {
+        for (const ch of args[i].slice(1)) {
             flags.add(ch);
         }
     } else {
-        paths.push(arg);
+        paths.push(args[i]);
     }
 }
+
+console.log(paths);
 
 if (paths.length === 0) {
     paths.push(".");
