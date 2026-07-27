@@ -8,15 +8,12 @@ program
     .option("-w")
     .option("-c")
     .option("-l")
-    .argument("<files...>", "file to process");
+    .argument("<files...>", "files to process");
 
 program.parse();
 
 const options = program.opts();
 const paths = program.args;
-
-console.log(options);
-console.log(paths);
 
 // if no -lwc flags are supplied, wc prints
 // lines, words, bytes of each file
@@ -26,25 +23,43 @@ if (Object.keys(options).length === 0) {
     options.l = options.w = options.c = true;
 }
 
-/*
-for each path:
-    if path is not a directory, show error message
-    else:
-        create a temporary array
-        if l in options:
-            push line count to temp arr
-        if w in options:
-            push word count into temp arr
-        if c in options:
-           push byte count into data 
-    
-    join the array with path and print
-*/
+// keeps track of total values for each of the data
+// incrementally updated in the loop below
+const totals = { l: 0, w: 0, c: 0 };
 
 for (const path of paths) {
     if (fs.statSync(path).isDirectory()) {
         console.log(`wc: ${path}: read: Is a directory`);
     } else {
-        console.log(`${path} is a file`);
+        let outputStr = "";
+        const file = fs.readFileSync(path, "utf-8");
+        if (options.l) {
+            const lines = file.split("\n");
+            // exclude trailing empty line from count
+            if (lines.at(-1) === "") {
+                lines.pop();
+            }
+            const lineCount = lines.length;
+            totals.l += lineCount;
+            outputStr += `\t${lineCount}`;
+        }
+
+        if (options.w) {
+            // real wc splits not just on " ", but on white spaces more generally
+            const words = file.split(/\s+/).filter(Boolean);
+            const wordCount = words.length;
+            totals.w += wordCount;
+            outputStr += `\t${wordCount}`;
+        }
+
+        if (options.c) {
+            file.size;
+            const byteCount = fs.statSync(path).size;
+            totals.c += byteCount;
+            outputStr += `\t${byteCount}`;
+        }
+
+        outputStr += ` ${path}`;
+        console.log(outputStr);
     }
 }
