@@ -1,5 +1,5 @@
 import { program } from "commander";
-import fs from "node:fs";
+import fs, { chownSync } from "node:fs";
 import process from "node:process";
 
 program
@@ -13,10 +13,10 @@ program
 program.parse();
 
 const options = program.opts();
-const files = program.args;
+const paths = program.args;
 
 console.log(options);
-console.log(files);
+console.log(paths);
 
 // if no -lwc flags are supplied, wc prints
 // lines, words, bytes of each file
@@ -27,7 +27,24 @@ if (Object.keys(options).length === 0) {
 }
 
 /*
-array of objects with data [{l: 2, w: 12: c: 123, file: 'sample-files/1.txt}, ...]
-For each item, create a temp string
-If options.l, append to temp string the w value
+for each path:
+    if path is not a directory, show error message
+    else:
+        create a temporary array
+        if l in options:
+            push line count to temp arr
+        if w in options:
+            push word count into temp arr
+        if c in options:
+           push byte count into data 
+    
+    join the array with path and print
 */
+
+for (const path of paths) {
+    if (fs.statSync(path).isDirectory()) {
+        console.log(`wc: ${path}: read: Is a directory`);
+    } else {
+        console.log(`${path} is a file`);
+    }
+}
