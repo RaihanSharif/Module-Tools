@@ -66,6 +66,10 @@ for (const path of paths) {
     }
 }
 
+// if there's more than one file, print out a total
+// if a flag is not selected, then the value for that flag is 0
+// filter out anything with a total of 0
 if (fileCount > 1) {
-    console.log(`\t${totals.l}\t${totals.w}\t${totals.c} total`);
+    const totalsArr = Object.values(totals).filter((elem) => elem !== 0);
+    console.log(`\t${totalsArr.join("\t")} total`);
 }
