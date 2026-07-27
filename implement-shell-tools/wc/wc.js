@@ -27,10 +27,12 @@ if (Object.keys(options).length === 0) {
 // incrementally updated in the loop below
 const totals = { l: 0, w: 0, c: 0 };
 
+let fileCount = 0;
 for (const path of paths) {
     if (fs.statSync(path).isDirectory()) {
         console.log(`wc: ${path}: read: Is a directory`);
     } else {
+        fileCount++;
         let outputStr = "";
         const file = fs.readFileSync(path, "utf-8");
         if (options.l) {
@@ -62,4 +64,8 @@ for (const path of paths) {
         outputStr += ` ${path}`;
         console.log(outputStr);
     }
+}
+
+if (fileCount > 1) {
+    console.log(`\t${totals.l}\t${totals.w}\t${totals.c} total`);
 }
