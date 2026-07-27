@@ -7,21 +7,19 @@ const flags = new Set();
 let paths = [];
 
 let isFlag = true;
-for (let i = 0; i < args.length; i++) {
-    if (isFlag && args[i] === "--") {
+for (const arg of args) {
+    if (isFlag && arg === "--") {
         isFlag = false;
-    } else if (isFlag && args[i].startsWith("-") && args[i] !== "-") {
+    } else if (isFlag && arg.startsWith("-") && arg !== "-") {
         // capture the flags without the -
         // supports combined flags like -1a
-        for (const ch of args[i].slice(1)) {
+        for (const ch of arg.slice(1)) {
             flags.add(ch);
         }
     } else {
-        paths.push(args[i]);
+        paths.push(arg);
     }
 }
-
-console.log(paths);
 
 if (paths.length === 0) {
     paths.push(".");
