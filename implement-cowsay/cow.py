@@ -22,8 +22,13 @@ args = parser.parse_args()
 # extract the aimal argument
 animal = vars(args)['animal']
 
+print(animal)
+
 # list of positional arguments as space-separated string
 message = " ".join(vars(args)['message'])
 
 # call cowsay with the animal and message
-print(cowsay.get_output_string(animal, message))
+if (animal):
+    print(cowsay.get_output_string(animal, message))
+else:
+    cowsay.cow(message)
