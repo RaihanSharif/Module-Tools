@@ -1,5 +1,5 @@
 import { program } from "commander";
-import fs, { chownSync } from "node:fs";
+import fs from "node:fs";
 import process from "node:process";
 
 program
@@ -30,7 +30,7 @@ const totals = { l: 0, w: 0, c: 0 };
 let fileCount = 0;
 for (const path of paths) {
     if (fs.statSync(path).isDirectory()) {
-        console.log(`wc: ${path}: read: Is a directory`);
+        console.eror(`wc: ${path}: read: Is a directory`);
     } else {
         fileCount++;
         let outputStr = "";
