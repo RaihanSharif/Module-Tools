@@ -29,6 +29,7 @@ if (paths.length === 0) {
 // if -a flag, then include dotfiles, else exclude dotfiles
 function getPathEntries(path, aFlag = flags.has("a")) {
     let entries = fs.readdirSync(path);
+    entries = [".", "..", entries];
 
     if (!aFlag) {
         entries = entries.filter((e) => !e.startsWith("."));
