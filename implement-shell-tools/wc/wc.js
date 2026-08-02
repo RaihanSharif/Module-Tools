@@ -27,9 +27,22 @@ if (Object.keys(options).length === 0) {
 // incrementally updated in the loop below
 const totals = { l: 0, w: 0, c: 0 };
 
+// wc actually prints total if there is more than one argument, not more than one file
+// e.g. wc invalid.txt valid.txt
+// there will be a total line with the same stats are the valid.txt stats
 let fileCount = 0;
+
 for (const path of paths) {
-    if (fs.statSync(path).isDirectory()) {
+    let isDir;
+    try {
+        isDir = fs.statSync(path).isDirectory();
+    } catch (err) {
+        console.error(`wc: ${path} open: No such file or directory`);
+        fileCount++;
+        continue;
+    }
+
+    if (isDir) {
         console.eror(`wc: ${path}: read: Is a directory`);
     } else {
         fileCount++;
