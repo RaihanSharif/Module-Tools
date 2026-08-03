@@ -28,11 +28,11 @@ def read_file(path):
 
 # -b (number the non-empty lines) takes priority over -n (number all lines)
 # if both are present
-def format_lines(lines, number_all=False, number_non_empty=False):
+def format_lines(lines, number_all=False, number_nonempty=False):
     """Returns a list of formatted output lines"""
     output = []
     
-    if number_non_empty:
+    if number_nonempty:
         line_num = 0
         for line in lines:
             if line == "":
@@ -48,8 +48,29 @@ def format_lines(lines, number_all=False, number_non_empty=False):
     else:
         output = lines
 
+    return output
+
 
 # TODO: runner function to call read_file, and feed it into formatLines, then print
+def cat_file(path, number_all=False, number_nonempty=False):
+    """
+    Calls read_file -> format_lines -> prints formatted line. 
+    Returns True if file read successfully, else returns False
+
+    If failed to read file, prints error to stderr
+    """
+    content, error = read_file(path)
+    if (error):
+        print(error, file=sys.stderr)
+        return False
+
+    # splitlines automatically trims trailing empty lines
+    lines = content.splitlines()
+    for line in format_lines(lines, number_all, number_nonempty):
+        print(line)
+
+    return True
+
 
 def main():
     # cat exits with error code 1 if any file read fails
@@ -57,7 +78,7 @@ def main():
 
     for path in args.paths:
         line_num = 1
-        is_success = cat_file(path)
+        is_success = cat_file(path, args.n, args.b)
 
         if not is_success:
             file_error = True
