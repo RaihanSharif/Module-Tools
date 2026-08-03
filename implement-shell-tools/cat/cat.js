@@ -45,7 +45,7 @@ for (const path of paths) {
 
     if (flag === "-n") {
         for (const line of lines) {
-            console.log(`     ${lineNum} ${line}`);
+            console.log(`${String(lineNum).padStart(6, " ")}\t${line}`);
             lineNum++;
         }
     } else if (flag === "-b") {
@@ -53,7 +53,7 @@ for (const path of paths) {
             if (line === "") {
                 console.log(line);
             } else {
-                console.log(`     ${lineNum} ${line}`);
+                console.log(`${String(lineNum).padStart(6, " ")}\t${line}`);
                 lineNum++;
             }
         }
