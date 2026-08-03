@@ -19,18 +19,28 @@ def cat_file(path):
             content = f.read()
     except FileNotFoundError:
         print(f"cat: {path}: No such file or directory", file=sys.stderr)
-        return
+        return False
     except IsADirectoryError:
         print(f"cat: {path}: Is a directory", file=sys.stderr)
-        return
+        return False
     except PermissionError:
         print(f"cat: {path}: Permission denied", file=sys.stderr)
-        return
+        return False
 
     print(content)
 
 
 
+# cat exits with error code 1 if any file read fails
+file_error = False
+
 for path in args.paths:
     line_num = 1
-    cat_file(path)
+    is_success = cat_file(path)
+
+    if not is_success:
+        file_error = True
+
+# if at any point, file reading failed file error is set to True, 
+# and program exist with code 1 after all tasks completed
+sys.exit(1 if file_error else 0)
