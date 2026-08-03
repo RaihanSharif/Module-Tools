@@ -13,34 +13,60 @@ parser.add_argument("paths", nargs="+", help="file path or paths", )
 args = parser.parse_args();
 
 # cat returns different error messages depending on the reason the path could be read
-def cat_file(path):
+def read_file(path):
+    """Returns (content, error_message). error_message is None on success"""
     try:
         with open(path, "r",) as f:
-            content = f.read()
+            return f.read(), None
     except FileNotFoundError:
-        print(f"cat: {path}: No such file or directory", file=sys.stderr)
-        return False
+        return None, f"cat: {path}: No such file or directory"
     except IsADirectoryError:
-        print(f"cat: {path}: Is a directory", file=sys.stderr)
-        return False
+        return None, f"cat: {path}: Is a directory"
     except PermissionError:
-        print(f"cat: {path}: Permission denied", file=sys.stderr)
-        return False
-
-    print(content)
+        return None, f"cat: {path}: Permission denied"
 
 
+# -b (number the non-empty lines) takes priority over -n (number all lines)
+# if both are present
+def format_lines(lines, number_all=False, number_non_empty=False):
+    """Returns a list of formatted output lines"""
+    output = []
+    
+    if number_non_empty:
+        line_num = 0
+        for line in lines:
+            if line == "":
+                output.append("")
+            else:
+                line_num += 1
+                # {line_num:6} right justied number, length of at least 6
+                # {some_str:6} left justifed string, length fo at least 6
+                output.append(f"{line_num:6}\t{line}")
+    elif number_all:
+        for i, line in enumerate(lines, start=1):
+            output.append(f"{i:6}\t{line}")
+    else:
+        output = lines
 
-# cat exits with error code 1 if any file read fails
-file_error = False
 
-for path in args.paths:
-    line_num = 1
-    is_success = cat_file(path)
+# TODO: runner function to call read_file, and feed it into formatLines, then print
 
-    if not is_success:
-        file_error = True
+def main():
+    # cat exits with error code 1 if any file read fails
+    file_error = False
 
-# if at any point, file reading failed file error is set to True, 
-# and program exist with code 1 after all tasks completed
-sys.exit(1 if file_error else 0)
+    for path in args.paths:
+        line_num = 1
+        is_success = cat_file(path)
+
+        if not is_success:
+            file_error = True
+
+    # if at any point, file reading failed file error is set to True, 
+    # and program exist with code 1 after all tasks completed
+    sys.exit(1 if file_error else 0)
+
+# ensures that main only runs when this file/module is directly executed
+# not when it is imported, for example, for automated tests
+if __name__ == "__main__":
+    main()
