@@ -1,5 +1,6 @@
 import argparse
 import sys
+import os
 
 parser = argparse.ArgumentParser(
     prog="a simple version of ls",
@@ -18,6 +19,16 @@ parser.add_argument("paths", nargs="*", help="file/directory path(s) to display"
 
 args = parser.parse_args()
 
-print(args)
 
-# def getDirectoryEntries(path, aFlag=args.a):
+def getDirectoryEntries(path, aFlag=args.a):
+    # warning: listdir() prints current directory by default
+    entries = os.listdir(path)
+    entries = [".", ".."] + entries
+    entries.sort()
+
+    if (not args.a):
+        entries = [entry for entry in entries if not entry.startswith(".")]
+    return entries
+
+for path in args.paths:
+    print(getDirectoryEntries(path))
