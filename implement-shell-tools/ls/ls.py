@@ -31,15 +31,32 @@ def get_dir_entries(path, aFlag=args.a):
 
     return entries
 
+
 def print_entries(entries, onePerLineFlag = args.opt_one):
     if (onePerLineFlag):
         for entry in entries:
             print(entry)
-    else:
+    elif (len(entries) > 0):
         for i in range(len(entries)-1):
             print(f"{entries[i]}\t", end="")
-        print(entries[-1])
+        print(f"{entries[-1]}")
 
 
-# for path in args.paths:
-#     printEntries(getDirectoryEntries(path))
+def main():
+    # file and directory paths are processed separately
+    file_args = [arg for arg in args.paths if os.path.isfile(arg)]
+    dir_args = [arg for arg in args.paths if os.path.isdir(arg)]
+
+    if (len(file_args) > 0):
+        print_entries(file_args)
+
+    for index, path in enumerate(dir_args, start=0):
+        if (len(args.paths) > 1):
+            if (index > 0 or len(file_args) > 0):
+                print("")
+            print(f"{path}:")
+        print_entries(get_dir_entries(path))
+
+
+if __name__ == "__main__":
+    main()
