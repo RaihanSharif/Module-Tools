@@ -20,7 +20,7 @@ parser.add_argument("paths", nargs="*", help="file/directory path(s) to display"
 args = parser.parse_args()
 
 
-def getDirectoryEntries(path, aFlag=args.a):
+def get_dir_entries(path, aFlag=args.a):
     # warning: listdir() prints current directory by default
     entries = os.listdir(path)
     entries = [".", ".."] + entries
@@ -28,10 +28,10 @@ def getDirectoryEntries(path, aFlag=args.a):
 
     if (not args.a):
         entries = [entry for entry in entries if not entry.startswith(".")]
-        
+
     return entries
 
-def printEntries(entries, onePerLineFlag = args.opt_one):
+def print_entries(entries, onePerLineFlag = args.opt_one):
     if (onePerLineFlag):
         for entry in entries:
             print(entry)
@@ -41,6 +41,5 @@ def printEntries(entries, onePerLineFlag = args.opt_one):
         print(entries[-1])
 
 
-
-for path in args.paths:
-    printEntries(getDirectoryEntries(path))
+# for path in args.paths:
+#     printEntries(getDirectoryEntries(path))
