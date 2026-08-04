@@ -44,8 +44,26 @@ def print_entries(entries, onePerLineFlag = args.opt_one):
 
 def main():
     # file and directory paths are processed separately
-    file_args = [arg for arg in args.paths if os.path.isfile(arg)]
-    dir_args = [arg for arg in args.paths if os.path.isdir(arg)]
+    # file_args = [arg for arg in args.paths if os.path.isfile(arg)]
+    # dir_args = [arg for arg in args.paths if os.path.isdir(arg)]
+
+    file_args = []
+    dir_args = []
+    invalid_args = []
+
+    # this is a simplication, it groups all errors under "invalid file"
+    # real ls would have different messages things like permission denied
+    # also bad because it makes two syscalls
+    for arg in args.paths:
+        if (os.path.isfile(arg)):
+            file_args.append(arg)
+        elif (os.path.isdir(arg)):
+            dir_args.append(arg)
+        else:
+            invalid_args.append(arg)
+
+    for arg in invalid_args:
+        print(f"ls: {arg}: No such file or directory", file=sys.stderr)
 
     if (len(file_args) > 0):
         print_entries(file_args)
