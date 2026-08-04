@@ -28,7 +28,19 @@ def getDirectoryEntries(path, aFlag=args.a):
 
     if (not args.a):
         entries = [entry for entry in entries if not entry.startswith(".")]
+        
     return entries
 
+def printEntries(entries, onePerLineFlag = args.opt_one):
+    if (onePerLineFlag):
+        for entry in entries:
+            print(entry)
+    else:
+        for i in range(len(entries)-1):
+            print(f"{entries[i]}\t", end="")
+        print(entries[-1])
+
+
+
 for path in args.paths:
-    print(getDirectoryEntries(path))
+    printEntries(getDirectoryEntries(path))
