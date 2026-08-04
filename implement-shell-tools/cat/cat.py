@@ -10,7 +10,7 @@ parser.add_argument("-n", action="store_true", help="number all output lines")
 parser.add_argument("-b", action="store_true", help="number non-empty output lines")
 parser.add_argument("paths", nargs="+", help="file path or paths", )
 
-args = parser.parse_args();
+args = parser.parse_args()
 
 # cat returns different error messages depending on the reason the path could be read
 def read_file(path):
