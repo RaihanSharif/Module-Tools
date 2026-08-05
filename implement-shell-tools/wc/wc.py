@@ -19,17 +19,12 @@ args = parser.parse_args()
 totals = {"l": 0, "w": 0, "c": 0}
 
 for path in args.paths:
-    try:
-        if (os.path.isdir(path)):
-            print(f"wc: {path}: read: Is a directory")
-    except:
-        print(f"wc: {path} open: No such file or directory", file=sys.stderr)
-        file_count += 1
-        continue
-
-    if (os.path.isfile(path)):
+    if (not os.path.exists(path)):
+        print(f"wc: {path}: open: No such file or directory", file=sys.stderr)
+    elif (os.path.isdir(path)):
+        print(f"wc: {path}: read: Is a directory") 
+    elif (os.path.isfile(path)):
         output_str = ""
-
         with open(path, "r", encoding="utf-8") as file:
             lines = file.readlines()
 
