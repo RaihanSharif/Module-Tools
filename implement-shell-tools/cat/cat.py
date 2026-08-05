@@ -16,7 +16,7 @@ args = parser.parse_args()
 def read_file(path):
     """Returns (content, error_message). error_message is None on success"""
     try:
-        with open(path, "r",) as f:
+        with open(path, "r", encoding="utf-8") as f:
             return f.read(), None
     except FileNotFoundError:
         return None, f"cat: {path}: No such file or directory"
