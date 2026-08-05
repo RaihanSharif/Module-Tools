@@ -18,8 +18,6 @@ args = parser.parse_args()
 
 totals = {"l": 0, "w": 0, "c": 0}
 
-file_count = 0
-
 for path in args.paths:
     try:
         if (os.path.isdir(path)):
@@ -30,7 +28,6 @@ for path in args.paths:
         continue
 
     if (os.path.isfile(path)):
-        file_count += 1
         output_str = ""
 
         with open(path, "r", encoding="utf-8") as file:
@@ -60,7 +57,7 @@ for path in args.paths:
         output_str += f" {path}"
         print(output_str)
 
-if (file_count > 1):
+if (len(args.paths) > 1):
     res = {key : val for key, val in totals.items() 
            if val != 0}
     total_str = ""
