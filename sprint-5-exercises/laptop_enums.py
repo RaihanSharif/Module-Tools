@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from enum import Enum
-from typing import List, Optional
+from typing import List
+from collections import Counter
 
 class OperatingSystem(Enum):
     MACOS = "macOS"
@@ -44,7 +45,10 @@ laptops = [
 ]
 
 
-# take input to create a new Person, validate the input to ensure the person data can be used to create a valid person
+# take input (name, age, preferred os), create Person object
+# show them how many laptops with their chosen OS are available
+# if there is a different os with more laptops, tell user they are more likely to get a laptop
+# if they choose that os
 
 # loops forever until alphabetic string provided
 def person_name_input() -> str:
@@ -73,16 +77,23 @@ def preferred_os_input() -> OperatingSystem:
         os_choice = input(f"Invalid choice, check spelling and spaces. choices:  {os_options}: ").strip().upper()
 
 
+print(f"Welcome to the CYF library. Enter your details to begin")
 
-        
-# run a while loop to act as an interactive menu, in which user input is taken step by step
-print(f"Welcome to the CYF library. There are {len(laptops)} laptops available!")
-print("Enter your details to begin")
-while True:
-    name = person_name_input()
-    age = person_age_input()
-    prefered_os = preferred_os_input()
+name = person_name_input()
+age = person_age_input()
+prefered_os = preferred_os_input()
 
-    person: Person = Person(name, age, prefered_os)
-    print(person)
-    break
+person: Person = Person(name, age, prefered_os)
+
+possible_laptops = find_possible_laptops(laptops, person)
+
+print(f"There are {len(possible_laptops)} laptops with your preferred OS.")
+
+# keep only non-preferred OS, and then see if there there is an OS with more laptops available
+non_preferred_os = filter(lambda x: x.operating_system != person.preferred_operating_system, laptops)
+
+counter = Counter(laptop.operating_system for laptop in non_preferred_os)
+most_common_os, count = counter.most_common(1)[0]
+
+if (count > len(possible_laptops)):
+    print(f"there are {count} latops with {most_common_os.name} operating system. You are more likely to get a laptop if you choose {most_common_os.name} ")
