@@ -1,0 +1,16 @@
+Encapsulation: 
+Data and methods are packaged together to form one cohesive unit.
+This allows great control of access and modification of the data,
+presenting an interface to the user, and hiding the implementation details.
+
+The class/object can impose rules on access and modification. E.g. balance can't
+be negative.
+
+Implementation can also be changed without breaking the interface which 
+should be reliable and consistent over time.
+
+Ease of use:
+Makes it easier for users of the data, as they only need to reason about
+the interface, not the implementation details. E.g. methods that operate on an object
+can be easily with the dot notation and IDE autocomplete.
+
