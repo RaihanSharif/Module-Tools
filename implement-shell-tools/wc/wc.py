@@ -8,9 +8,9 @@ parser = argparse.ArgumentParser(
     prog="a simple version of wc. Takes in one or more files.",
     description="ls command line tool which can accept -l -w -c cflags")
 
-parser.add_argument("-l", action="store_true", help="show line count", default="l")
-parser.add_argument("-w", action="store_true", help="show word count", default='w')
-parser.add_argument("-c", action="store_true", help="show byte count", default="c")
+parser.add_argument("-l", action="store_true", help="show line count")
+parser.add_argument("-w", action="store_true", help="show word count")
+parser.add_argument("-c", action="store_true", help="show byte count")
 
 parser.add_argument("paths", nargs="*", help="file(s) for which to show data")
 
@@ -18,29 +18,32 @@ args = parser.parse_args()
 
 totals = {"l": 0, "w": 0, "c": 0}
 
+# if no flags then set all flags to true, same as in real wc
+if (not args.l and not args.w and not args.c):
+    args.l = args.w = args.c = True
+
 for path in args.paths:
     if (not os.path.exists(path)):
         print(f"wc: {path}: open: No such file or directory", file=sys.stderr)
     elif (os.path.isdir(path)):
-        print(f"wc: {path}: read: Is a directory") 
+        print(f"wc: {path}: read: Is a directory", file=sys.stderr) 
     elif (os.path.isfile(path)):
         output_str = ""
         with open(path, "r", encoding="utf-8") as file:
-            lines = file.readlines()
+            content = file.read()
 
+            lines = content.split('\n')
+            
             if (args.l):
-                if (len(lines) > 0 and lines[-1] == ""):
-                    lines.pop()
+                #if (len(lines)) > 0: 
+                 #   lines[-1].strip()
 
-                line_count = len(lines)
+                line_count = content.count('\n')
                 totals["l"] += line_count
                 output_str += f"{line_count:8}"
 
             if (args.w):
-                word_count = 0
-                for line in lines:
-                    # python string.split splits on any white space
-                    word_count += len(line.split())
+                word_count = len(content.split())
                 totals["w"] += word_count
                 output_str += f"{word_count:8}"
 
