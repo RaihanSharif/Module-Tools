@@ -22,8 +22,5 @@ class Person:
         # note: the above is necessary because with my old version, if the original birthday is on feb 29
         # then it would try to create a new date of feb 29 on a non-leap year and crash
 
-
-        return today >= dt.date(self.birthdate.year +18, self.birthdate.month, self.birthdate.day)
-
 imran = Person("Imran", dt.date(2008,8,6), "Ubuntu")
 print(imran.is_adult())
