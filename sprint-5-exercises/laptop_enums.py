@@ -76,9 +76,9 @@ print(f"Welcome to the CYF library. Enter your details to begin")
 
 name = person_name_input()
 age = person_age_input()
-prefered_os = preferred_os_input()
+preferred_os = preferred_os_input()
 
-person: Person = Person(name, age, prefered_os)
+person: Person = Person(name, age, preferred_os)
 
 possible_laptops = find_possible_laptops(laptops, person)
 
