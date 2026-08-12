@@ -32,11 +32,6 @@ def find_possible_laptops(laptops: List[Laptop], person: Person) -> List[Laptop]
     return possible_laptops
 
 
-# people = [
-#     Person(name="Imran", age=22, preferred_operating_system=OperatingSystem.UBUNTU),
-#     Person(name="Eliza", age=34, preferred_operating_system=OperatingSystem.ARCH),
-# ]
-
 laptops = [
     Laptop(id=1, manufacturer="Dell", model="XPS", screen_size_in_inches=13, operating_system=OperatingSystem.ARCH),
     Laptop(id=2, manufacturer="Dell", model="XPS", screen_size_in_inches=15, operating_system=OperatingSystem.UBUNTU),
